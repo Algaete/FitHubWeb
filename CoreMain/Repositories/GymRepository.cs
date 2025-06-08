@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CoreMain.Models;
 using Supabase;
+using Supabase.Postgrest.Constants;
 
 namespace CoreMain.Repositories
 {
@@ -21,19 +22,19 @@ namespace CoreMain.Repositories
             return response.Models;
         }
 
-        public async Task<Gym> GetByIdAsync(Guid id)
+        public async Task<Gym?> GetByIdAsync(Guid id)
         {
-            var response = await _supabaseClient.From<Gym>().Filter("id", "eq", id).Get();
+            var response = await _supabaseClient.From<Gym>().Filter("id", Operator.Equals, id).Get();
             return response.Models.Count > 0 ? response.Models[0] : null;
         }
 
-        public async Task<Gym> CreateAsync(Gym gym)
+        public async Task<Gym?> CreateAsync(Gym gym)
         {
             var response = await _supabaseClient.From<Gym>().Insert(gym);
             return response.Models.Count > 0 ? response.Models[0] : null;
         }
 
-        public async Task<Gym> UpdateAsync(Gym gym)
+        public async Task<Gym?> UpdateAsync(Gym gym)
         {
             var response = await _supabaseClient.From<Gym>().Update(gym);
             return response.Models.Count > 0 ? response.Models[0] : null;
@@ -41,7 +42,7 @@ namespace CoreMain.Repositories
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var response = await _supabaseClient.From<Gym>().Filter("id", "eq", id).Delete();
+            var response = await _supabaseClient.From<Gym>().Filter("id", Operator.Equals, id).Delete();
             return response.Models.Count > 0;
         }
     }

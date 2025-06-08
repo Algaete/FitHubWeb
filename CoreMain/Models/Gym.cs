@@ -1,6 +1,6 @@
 using System;
 using Supabase.Postgrest.Models;
-using Postgrest.Attributes;
+using Supabase.Postgrest.Attributes;
 
 namespace CoreMain.Models
 {
