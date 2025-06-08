@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using CoreMain.Interfaces;
 using CoreMain.Models;
-using CoreMain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitHubApi.Controllers
@@ -18,55 +19,122 @@ namespace FitHubApi.Controllers
             _gymRepository = gymRepository;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Gym>>> GetAllGyms()
+        private GymDto ToDto(Gym gym)
         {
-            var gyms = await _gymRepository.GetAllAsync();
-            return Ok(gyms);
+            return new GymDto
+            {
+                Id = gym.Id,
+                Name = gym.Name,
+                Address = gym.Address,
+                Phone = gym.Phone,
+                CreatedAt = gym.CreatedAt,
+                Logo = gym.Logo,
+                City = gym.City,
+                Country = gym.Country,
+                State = gym.State,
+                Description = gym.Description,
+                Photo1 = gym.Photo1,
+                Photo2 = gym.Photo2,
+                Photo3 = gym.Photo3,
+                LongDescription = gym.LongDescription,
+                UrlGym = gym.UrlGym
+            };
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Gym?>> GetGymById(Guid id)
+        [HttpGet("gyms")]
+        public async Task<ActionResult<IEnumerable<GymDto>>> GetAllGyms()
         {
-            var gym = await _gymRepository.GetByIdAsync(id);
-            if (gym == null)
+            try
             {
-                return NotFound();
+                var gyms = await _gymRepository.GetAllAsync();
+                return Ok(gyms.Where(g => g != null).Select(ToDto));
             }
-            return Ok(gym);
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Gym?>> CreateGym(Gym gym)
+        [HttpGet("gyms/{id}")]
+        public async Task<ActionResult<GymDto>> GetGymById(string id)
         {
-            var createdGym = await _gymRepository.CreateAsync(gym);
-            return CreatedAtAction(nameof(GetGymById), new { id = createdGym?.Id }, createdGym);
+            try
+            {
+                var gym = await _gymRepository.GetByIdAsync(id);
+                if (gym == null)
+                {
+                    return NotFound($"Gimnasio con ID {id} no encontrado");
+                }
+                return Ok(ToDto(gym));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateGym(Guid id, Gym gym)
+        [HttpPost("gyms")]
+        public async Task<ActionResult<GymDto>> CreateGym(Gym gym)
         {
-            if (id != gym.Id)
+            try
             {
-                return BadRequest();
+                if (gym == null)
+                {
+                    return BadRequest("Los datos del gimnasio son requeridos");
+                }
+
+                var createdGym = await _gymRepository.CreateAsync(gym);
+                return CreatedAtAction(nameof(GetGymById), new { id = createdGym.Id }, ToDto(createdGym));
             }
-            var updatedGym = await _gymRepository.UpdateAsync(gym);
-            if (updatedGym == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
             }
-            return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteGym(Guid id)
+        [HttpPut("gyms/{id}")]
+        public async Task<ActionResult<GymDto>> UpdateGym(string id, Gym gym)
         {
-            var result = await _gymRepository.DeleteAsync(id);
-            if (!result)
+            try
             {
-                return NotFound();
+                if (gym == null)
+                {
+                    return BadRequest("Los datos del gimnasio son requeridos");
+                }
+
+                var existingGym = await _gymRepository.GetByIdAsync(id);
+                if (existingGym == null)
+                {
+                    return NotFound($"Gimnasio con ID {id} no encontrado");
+                }
+
+                var updatedGym = await _gymRepository.UpdateAsync(id, gym);
+                return Ok(ToDto(updatedGym));
             }
-            return NoContent();
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("gyms/{id}")]
+        public async Task<ActionResult> DeleteGym(string id)
+        {
+            try
+            {
+                var existingGym = await _gymRepository.GetByIdAsync(id);
+                if (existingGym == null)
+                {
+                    return NotFound($"Gimnasio con ID {id} no encontrado");
+                }
+
+                await _gymRepository.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
         }
     }
 }

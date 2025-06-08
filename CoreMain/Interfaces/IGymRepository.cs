@@ -1,16 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CoreMain.Models;
 
-namespace CoreMain.Repositories
+namespace CoreMain.Interfaces
 {
     public interface IGymRepository
     {
         Task<IEnumerable<Gym>> GetAllAsync();
-        Task<Gym?> GetByIdAsync(Guid id);
+        Task<Gym?> GetByIdAsync(string id);
         Task<Gym?> CreateAsync(Gym gym);
-        Task<Gym?> UpdateAsync(Gym gym);
-        Task<bool> DeleteAsync(Guid id);
+        Task<Gym?> UpdateAsync(string id, Gym gym);
+        Task DeleteAsync(string id);
     }
 } 
