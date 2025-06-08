@@ -26,7 +26,7 @@ namespace FitHubApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Gym>> GetGymById(Guid id)
+        public async Task<ActionResult<Gym?>> GetGymById(Guid id)
         {
             var gym = await _gymRepository.GetByIdAsync(id);
             if (gym == null)
@@ -37,10 +37,10 @@ namespace FitHubApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Gym>> CreateGym(Gym gym)
+        public async Task<ActionResult<Gym?>> CreateGym(Gym gym)
         {
             var createdGym = await _gymRepository.CreateAsync(gym);
-            return CreatedAtAction(nameof(GetGymById), new { id = createdGym.Id }, createdGym);
+            return CreatedAtAction(nameof(GetGymById), new { id = createdGym?.Id }, createdGym);
         }
 
         [HttpPut("{id}")]

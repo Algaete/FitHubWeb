@@ -8,9 +8,9 @@ namespace CoreMain.Repositories
     public interface IGymRepository
     {
         Task<IEnumerable<Gym>> GetAllAsync();
-        Task<Gym> GetByIdAsync(Guid id);
-        Task<Gym> CreateAsync(Gym gym);
-        Task<Gym> UpdateAsync(Gym gym);
+        Task<Gym?> GetByIdAsync(Guid id);
+        Task<Gym?> CreateAsync(Gym gym);
+        Task<Gym?> UpdateAsync(Gym gym);
         Task<bool> DeleteAsync(Guid id);
     }
 } 
