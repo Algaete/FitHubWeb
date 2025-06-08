@@ -1,6 +1,0 @@
-@FitHubWeb_HostAddress = http://localhost:5182
-
-GET {{FitHubWeb_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

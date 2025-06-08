@@ -1,83 +1,72 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using CoreMain.Models;
+using CoreMain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitHubApi.Controllers
 {
-    public class ManagerController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ManagerController : ControllerBase
     {
-        // GET: ManagerController
-        public ActionResult Index()
+        private readonly IGymRepository _gymRepository;
+
+        public ManagerController(IGymRepository gymRepository)
         {
-            return View();
+            _gymRepository = gymRepository;
         }
 
-        // GET: ManagerController/Details/5
-        public ActionResult Details(int id)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Gym>>> GetAllGyms()
         {
-            return View();
+            var gyms = await _gymRepository.GetAllAsync();
+            return Ok(gyms);
         }
 
-        // GET: ManagerController/Create
-        public ActionResult Create()
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Gym>> GetGymById(Guid id)
         {
-            return View();
+            var gym = await _gymRepository.GetByIdAsync(id);
+            if (gym == null)
+            {
+                return NotFound();
+            }
+            return Ok(gym);
         }
 
-        // POST: ManagerController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult<Gym>> CreateGym(Gym gym)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var createdGym = await _gymRepository.CreateAsync(gym);
+            return CreatedAtAction(nameof(GetGymById), new { id = createdGym.Id }, createdGym);
         }
 
-        // GET: ManagerController/Edit/5
-        public ActionResult Edit(int id)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateGym(Guid id, Gym gym)
         {
-            return View();
+            if (id != gym.Id)
+            {
+                return BadRequest();
+            }
+            var updatedGym = await _gymRepository.UpdateAsync(gym);
+            if (updatedGym == null)
+            {
+                return NotFound();
+            }
+            return NoContent();
         }
 
-        // POST: ManagerController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteGym(Guid id)
         {
-            try
+            var result = await _gymRepository.DeleteAsync(id);
+            if (!result)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ManagerController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ManagerController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return NoContent();
         }
     }
 }
