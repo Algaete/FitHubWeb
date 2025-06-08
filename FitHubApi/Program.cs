@@ -53,6 +53,7 @@ builder.Services.AddSingleton<Supabase.Client>(sp =>
 // Registro de repositorios
 builder.Services.AddScoped<CoreMain.Interfaces.IGymRepository, CoreMain.Repositories.Implementations.GymRepository>();
 builder.Services.AddScoped<CoreMain.Interfaces.IUserRepository, CoreMain.Repositories.Implementations.UserRepository>();
+builder.Services.AddScoped<CoreMain.Interfaces.IPlanRepository, CoreMain.Repositories.Implementations.PlanRepository>();
 
 var app = builder.Build();
 
