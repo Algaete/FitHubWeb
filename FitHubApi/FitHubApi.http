@@ -1,0 +1,6 @@
+@FitHubApi_HostAddress = http://localhost:5011
+
+GET {{FitHubApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
