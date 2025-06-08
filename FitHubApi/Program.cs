@@ -58,6 +58,8 @@ builder.Services.AddScoped<CoreMain.Interfaces.IClassRepository, CoreMain.Reposi
 builder.Services.AddScoped<CoreMain.Interfaces.IClassScheduleRepository, CoreMain.Repositories.Implementations.ClassScheduleRepository>();
 builder.Services.AddScoped<CoreMain.Interfaces.IInstructorRepository, CoreMain.Repositories.Implementations.InstructorRepository>();
 builder.Services.AddScoped<CoreMain.Interfaces.IInstructorGymRepository, CoreMain.Repositories.Implementations.InstructorGymRepository>();
+builder.Services.AddScoped<CoreMain.Interfaces.IUserPlanRepository, CoreMain.Repositories.Implementations.UserPlanRepository>();
+builder.Services.AddScoped<CoreMain.Interfaces.IClassBookingRepository, CoreMain.Repositories.Implementations.ClassBookingRepository>();
 
 var app = builder.Build();
 
