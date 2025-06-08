@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using CoreMain.Models;
 using Supabase;
+using CoreMain.Interfaces;
 
 namespace CoreMain.Repositories
 {
@@ -42,8 +43,8 @@ namespace CoreMain.Repositories
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            await _supabaseClient.From<Gym>().Where(x => x.Id == id).Delete();
-            return true;
+            var response = await _supabaseClient.From<Gym>().Where(x => x.Id == id).Delete();
+            return response.Models.Any();
         }
     }
 }
