@@ -12,6 +12,7 @@ namespace CoreMain.Models
         [JsonPropertyName("id")]
         public Guid Id { get; set; }
 
+        [Column("gym_id")]
         [JsonPropertyName("gym_id")]
         public Guid? GymId { get; set; }
 
