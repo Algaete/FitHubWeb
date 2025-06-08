@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using CoreMain.Models;
 using Supabase;
 
@@ -21,28 +22,28 @@ namespace CoreMain.Repositories
             return response.Models;
         }
 
-        public async Task<Gym> GetByIdAsync(Guid id)
+        public async Task<Gym?> GetByIdAsync(Guid id)
         {
-            var response = await _supabaseClient.From<Gym>().Filter("id", "eq", id).Get();
-            return response.Models.Count > 0 ? response.Models[0] : null;
+            var response = await _supabaseClient.From<Gym>().Where(x => x.Id == id).Get();
+            return response.Models.FirstOrDefault();
         }
 
-        public async Task<Gym> CreateAsync(Gym gym)
+        public async Task<Gym?> CreateAsync(Gym gym)
         {
             var response = await _supabaseClient.From<Gym>().Insert(gym);
-            return response.Models.Count > 0 ? response.Models[0] : null;
+            return response.Models.FirstOrDefault();
         }
 
-        public async Task<Gym> UpdateAsync(Gym gym)
+        public async Task<Gym?> UpdateAsync(Gym gym)
         {
-            var response = await _supabaseClient.From<Gym>().Update(gym);
-            return response.Models.Count > 0 ? response.Models[0] : null;
+            var response = await _supabaseClient.From<Gym>().Where(x => x.Id == gym.Id).Update(gym);
+            return response.Models.FirstOrDefault();
         }
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var response = await _supabaseClient.From<Gym>().Filter("id", "eq", id).Delete();
-            return response.Models.Count > 0;
+            await _supabaseClient.From<Gym>().Where(x => x.Id == id).Delete();
+            return true;
         }
     }
-} 
+}

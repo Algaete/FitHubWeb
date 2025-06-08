@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using System;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -9,12 +12,9 @@ builder.Services.AddEndpointsApiExplorer();
 // Configuración de Supabase
 builder.Services.AddSingleton<Supabase.Client>(sp =>
 {
-    var options = new SupabaseOptions
-    {
-        Url = "https://mppqnucxvzegmzifptbf.supabase.co",
-        Key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wcHFudWN4dnplZ216aWZwdGJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc4ODAxMjIsImV4cCI6MjA2MzQ1NjEyMn0.Loo8gwqtcdIiicQfgVlnTSn-vPfBJlT6fc8pw27eM_I"
-    };
-    return new Supabase.Client(options);
+    var url = "https://mppqnucxvzegmzifptbf.supabase.co";
+    var key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wcHFudWN4dnplZ216aWZwdGJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc4ODAxMjIsImV4cCI6MjA2MzQ1NjEyMn0.Loo8gwqtcdIiicQfgVlnTSn-vPfBJlT6fc8pw27eM_I";
+    return new Supabase.Client(url, key);   
 });
 
 builder.Services.AddSwaggerGen();
