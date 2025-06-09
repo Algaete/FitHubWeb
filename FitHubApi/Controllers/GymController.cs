@@ -71,12 +71,15 @@ namespace FitHubApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var result = await _gymRepository.DeleteAsync(id);
-            if (!result)
+            try
+            {
+                await _gymRepository.DeleteAsync(id);
+                return NoContent();
+            }
+            catch
             {
                 return NotFound();
             }
-            return NoContent();
         }
 
         private static GymDto ToDto(Gym gym)
@@ -88,7 +91,6 @@ namespace FitHubApi.Controllers
                 Description = gym.Description,
                 Address = gym.Address,
                 Phone = gym.Phone,
-                Email = gym.Email,
                 CreatedAt = gym.CreatedAt
             };
         }
