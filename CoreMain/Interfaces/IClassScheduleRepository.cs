@@ -9,7 +9,7 @@ namespace CoreMain.Interfaces
     {
         Task<IEnumerable<ClassSchedule>> GetAllAsync();
         Task<ClassSchedule?> GetByIdAsync(Guid id);
-        Task<IEnumerable<ClassSchedule>> GetByClassIdAsync(Guid classId);
+        Task<IEnumerable<ClassSchedule>> GetByClassIdæAsync(Guid classId);
         Task<IEnumerable<ClassSchedule>> GetByInstructorIdAsync(Guid instructorId);
         Task<IEnumerable<ClassSchedule>> GetByDateRangeAsync(DateTime startDate, DateTime endDate);
         Task<ClassSchedule?> CreateAsync(ClassSchedule schedule);
